@@ -1,78 +1,85 @@
+<!DOCTYPE html>
 <html>
 <head>
- <meta charset="UTF-8">
- <title>Portal Coba Coba</title>
- <link href="assets/css/bootstrap.min.css" rel="stylesheet">
- <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
- <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
- <style>
-  body {
-   font-family: 'Roboto', sans-serif;
-   background-color: #ECF0F1;
-  }
- </style>
+    <title>Kamera</title>
+    <style>
+        video {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
+        #camera {
+            margin: 0 auto;
+        }
+
+        #video {
+            background-color: #666;
+        }
+
+        .hasil-foto {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
+        /* style lainnya */
+    </style>
 </head>
 <body>
- <div class="container-fluid" id="codelatte">
-  <nav class="navbar mb-3">
-  </nav>
-  <div class="row justify-content-center text-center" style="margin-top: 3%;">
-   <div class="card float-left col-md-3 mr-3" style="width: 20%;">
-    <div class="card-body">
-     <h2 class="card-title">Judul Halaman1</h2>
-     <img class="img-fluid mb-3" src="images/pic.png" alt="Card image cap" style="height: 150px; widht: 150px;">
-     <p class="card-text">Lorem ipsum dolor sit amet.</p> <a href="#" class="btn btn-primary"><i class="fa fa-sign-in"></i> Kunjungi Halaman</a>
+    <div id="camera">
+        <video id="video"></video>
+        <button id="snap">Snap Photo</button>
+        <button id="save">Save</button>
     </div>
-   </div>
-   <div class="card float-left col-md-3 mr-3" style="width: 20%;">
-    <div class="card-body">
-     <h2 class="card-title">Judul Halaman2</h2>
-     <img class="img-fluid mb-3" src="images/pic2.png" alt="Card image cap" style="height: 150px; widht: 150px;">
-     <p class="card-text">Lorem ipsum dolor sit amet.</p> <a href="#" class="btn btn-primary"><i class="fa fa-sign-in"></i> Kunjungi Halaman</a>
-    </div>
-   </div>
-   <div class="card float-left col-md-3 mr-3" style="width: 20%;">
-    <div class="card-body">
-     <h2 class="card-title">Judul Halaman3</h2>
-     <img class="img-fluid mb-3" src="images/pic3.png" alt="Card image cap" style="height: 150px; widht: 150px;">
-     <p class="card-text">Lorem ipsum dolor sit amet.</p> <a href="#" class="btn btn-primary"><i class="fa fa-sign-in"></i> Kunjungi Halaman</a>
-    </div>
-   </div>
-  </div>
-  <div class="row justify-content-center mt-3 text-center">
-   <div class="card float-left col-md-3 mr-3" style="width: 20%;">
-    <div class="card-body">
-     <h2 class="card-title">Judul Halaman</h2>
-     <img class="img-fluid mb-3" src="images/pic4.png" alt="Card image cap" style="height: 150px; widht: 150px;">
-     <p class="card-text">Lorem ipsum dolor sit amet.</p> <a href="#" class="btn btn-primary"><i class="fa fa-sign-in"></i> Kunjungi Halaman</a>
-    </div>
-   </div>
-   <div class="card float-left col-md-3 mr-3" style="width: 20%;">
-    <div class="card-body">
-     <h2 class="card-title">Judul Halaman</h2>
-     <img class="img-fluid mb-3" src="images/pic5.png" alt="Card image cap" style="height: 150px; widht: 150px;">
-     <p class="card-text">Lorem ipsum dolor sit amet.</p> <a href="#" class="btn btn-primary"><i class="fa fa-sign-in"></i> Kunjungi Halaman</a>
-    </div>
-   </div>
-   <div class="card float-left col-md-3 mr-3" style="width: 20%;">
-    <div class="card-body">
-     <h2 class="card-title">Judul Halaman</h2>
-     <img class="img-fluid mb-3" src="images/pic6.png" alt="Card image cap" style="height: 150px; widht: 150px;">
-     <p class="card-text">Lorem ipsum dolor sit amet.</p> <a href="#" class="btn btn-primary"><i class="fa fa-sign-in"></i> Kunjungi Halaman</a>
-    </div>
-   </div>
-  </div>
- </div>
-  <script>
-  function changeWide(){
-                document.getElementById("codelatte").className = "container-fluid";
-              }
-                function changeBoxed(){
-                document.getElementById("codelatte").className = "container ";
-              }
- </script>
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
- <script src="assets/js/bootstrap.min.js"></script>
+
+
+    <script>
+        
+        // get video element
+        var video = document.getElementById('video');
+
+        // get snap button
+        var snap = document.getElementById('snap');
+        // get access to the camera
+        navigator.mediaDevices.getUserMedia({ video: { width: 1920, height: 1080, facingMode: 'environment', autoFocus: true, autoExposure: true } }).then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+        });
+
+        
+        // take a snap
+        snap.addEventListener("click", function() {
+            // remove previous image
+            var previousImg = document.querySelector('img');
+            if (previousImg) {
+                previousImg.parentNode.removeChild(previousImg);
+            }
+
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            var img = document.createElement('img');
+            img.src = canvas.toDataURL();
+            img.classList.add("hasil-foto");
+            document.body.appendChild(img);
+        });
+
+        var save = document.getElementById('save');
+
+        // add event listener for save button
+        save.addEventListener("click", function() {
+            // get the image source
+            var imgSrc = document.querySelector('.hasil-foto').src;
+            // create a link
+            var link = document.createElement('a');
+            link.download = "image.png";
+            link.href = imgSrc;
+            // trigger download
+            link.click();
+        });
+
+    </script>
 </body>
 </html>
